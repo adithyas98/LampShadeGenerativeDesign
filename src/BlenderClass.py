@@ -50,3 +50,12 @@ class Blender:
         '''
         bpy.ops.mesh.primitive_cylinder_add(vertices=v, radius=r, depth=d, \
                                             end_fill_type='NGON', align='WORLD', location=(x, y, z), rotation=(rx, ry, rz), scale=(sx, sy, sz))            
+    def exportSTL(self,filepath):
+        '''
+        Export the stl file of the object that was created
+        Input:
+            - filepath: The full filepath to where you want to save the stl file
+        Output:
+            - Confirmation that the file was saved
+        '''
+        bpy.ops.export_mesh.stl(filepath=filepath)
