@@ -11,7 +11,15 @@ class LampGen:
     and stl file.
     '''
 
-    def __init__(self):
+    def __init__(self,changeDefaults=False):
+        '''
+        Inputs:
+            - changeDefaults: If the user wants to change the default 
+                                measurements used for the lamp, then they will
+                                be prompted to do so.
+        '''
+        #TODO: Handle the case where changeDefaults is True
+
 
 
 
