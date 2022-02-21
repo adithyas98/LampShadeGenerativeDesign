@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 import bpy #Python module for Blender
 
 class Blender:
