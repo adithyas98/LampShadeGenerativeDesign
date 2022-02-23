@@ -81,3 +81,6 @@ for i in range(1,4):
 for i in range(1,4):
     z = randint(10,100)
     bpy.ops.mesh.primitive_cylinder_add(radius=5, depth=200, location=(0,-95,z), rotation=(rot,0,rot))    
+
+
+bpy.ops.export_mesh.stl('INVOKE_DEFAULT',filepath='./test.stl')
