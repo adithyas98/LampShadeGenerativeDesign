@@ -142,7 +142,7 @@ class LampGen:
                     #now make the cylinder
                     self.blender.cylinderBetween(point0,point1,radius=2)
         return generatedDims
-    def linesBetweenFaces(self,face0,face1,points0,points1):
+    def linesBetweenFaces(self,face0,face1,points0,points1,iterations):
         '''
         Randomly generates cylinders between the points listed on the face
         Inputs:
@@ -150,9 +150,47 @@ class LampGen:
             - face1: list of four points that defines the second face
             - points0: list of points that defines the grid on face 1
             - points1: list of points that defines the grid on face 2
+            - iterations: A proxy for the complexity of the model
+                            -The number of random cylinders drawn
         Output:
             - Rendomly generated cylinders
         '''
+        #find the common coordinate for each face
+        commonIdxs = []
+        for face in [face0,face1]:
+            for i in len(faces[0]):
+                m = faces[0][i]
+                if m == faces[1][i] and m == faces[2][i]:
+                    #Then we have found out constant coordinate
+                    constantIdx.append(i)
+                    break
+        assert len(commonIdxs) == 2 #Want to make sure we have two faces!
+        for i in range(iterations + 1):
+            #Init the point lists with something noticable
+            p0 = [None,None,None]
+            p1 = [None,None,None]
+            #add the constant coordinates to each
+            p0[commonIdxs[0]] = face0[commonIdx[0]]
+            p1[commonIdxs[1]] = face1[commonIdx[1]]
+
+            #Add the random coordinate for face0
+            for dim in range(len(points0)):
+                if len(points0[dim]) == 0:
+                    continue
+                else:
+                    #We want to generate a point here
+                    p0[dim] = random.choice(points0[dim])
+             #Do the same for point 1
+             for dim in range(len(points1)):
+                if len(points1[dim]) == 0:
+                    continue
+                else:
+                    #We want to generate a point here
+                    p1[dim] = random.choice(points1[dim])
+                                       
+            #now we can create the cylinder
+            self.blender.cylinderBetween(p0,p1,radius=1)
+                    
 
 
 
