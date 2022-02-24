@@ -90,7 +90,7 @@ class Blender:
         Output:
             - Confirmation that the file was saved
         '''
-        bpy.ops.export_mesh.stl('INVOKE_DEFAULT',filepath='./test.stl')
+        bpy.ops.export_mesh.stl('INVOKE_DEFAULT',filepath=filepath)
     def blenderUnitsToInches(self,bu):
         '''
         Converts Blender units (BU) to inches

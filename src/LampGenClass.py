@@ -247,6 +247,13 @@ class LampGen:
         roof_Zcenter = H - base_h/2 - roof_t/2
         bpy.ops.mesh.primitive_cube_add(location=(0,0,roof_Zcenter), scale = (base_l/2, base_w/2, base_h/2))
         cube6 = bpy.context.active_object
+    def exportLampShade(self,filename):
+        '''
+        Method that will export the lamp shade as an stl file
+        Input:
+            - None
+        Output:
+            - stl file of lamp shade
         
         
 
