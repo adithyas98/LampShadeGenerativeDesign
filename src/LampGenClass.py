@@ -20,7 +20,7 @@ class LampGen:
             - csvFile: the full filepath to the csv file (String)
         '''
         #Define the intro to the questions
-        intro = "Please answer the following questions. All answers are in cm"
+        intro = "Please answer the following questions. All answers are in inches"
         qdata = dict()
         #Get the Dimensions of the Lamp
         #Diameter of the lamp

@@ -84,8 +84,30 @@ class Blender:
             - Confirmation that the file was saved
         '''
         bpy.ops.export_mesh.stl('INVOKE_DEFAULT',filepath='./test.stl')
+    def blenderUnitsToInches(self,bu):
+        '''
+        Converts Blender units (BU) to inches
+        Inputs:
+            - bu: blender units to convert
+        Output:
+            - conversion made to inches(float)
+        '''
+        #1in = 0.0254 bu
+        return bu/0.0254
+    def inchesToBlenderUnits(self,inches):
+        '''
+        Converts inches to Blender Units. Trusts that the scale has not been
+        changed!!!
+        Inputs:
+            - inches: inches measurement to convert
+        Outputs:
+            - Converted measurement in blender units (bu)
+        '''
+        #1in = 0.0254 bu
+        return inches * 0.0254
     def exportImage(self,filepath):
         '''
+        #TODO: UNTESTED !!!! PLEASE TEST!
         Will export an image of the object
         Input:
             - filepath: The filepath to save the image file
