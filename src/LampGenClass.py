@@ -3,6 +3,7 @@
 from BlenderClass import Blender
 from UIClass import UserInput
 from ShapewaysAPI import ShapeWayAPI
+from random import randint
 
 import os
 import random
@@ -12,7 +13,7 @@ class LampGen:
     This class will use the blender class to build the lamp shade and generate
     and stl file.
     '''
-
+    
     def __init__(self,csvInput=False,csvFile=None):
         '''
         Inputs:
@@ -63,6 +64,7 @@ class LampGen:
             #If the user doesn't want to use csv input
             #  Then we just want to ask the questions
             self.qdata = ui.askQuestions()
+            
         #create the blender object
         self.blender = Blender()
 
@@ -190,22 +192,63 @@ class LampGen:
                                        
             #now we can create the cylinder
             self.blender.cylinderBetween(p0,p1,radius=1)
-                    
 
-
-
-                    
-                    
-
+                
+    def Base(self):
+        '''
+        This class will take dimensions from UIclass to build the base
+        '''
+        
+        #roof thickness
+        roof_t = 1
+        
+        #pulling in dimensions from UIclass
+        lamp_r = self.qdata['d']['data'] #radius of lamp
+        lamp_h = self.qdata['lampHeight']['data'] #depth of lamp
+        base_l = self.qdata['length']['data'] #length of base
+        base_w = self.qdata['width']['data'] #width of base
+        base_h = lamp_h #height of base
+        H = self.qdata['height']['data'] #overall height
 
         
-
+        #building the base with cutout for lamp
+        bpy.ops.mesh.primitive_cube_add(location=(0,0,0), scale = (base_l/2, base_w/2, base_h/2))
+        cube = bpy.context.active_object
+        bpy.ops.mesh.primitive_cylinder_add(radius=lamp_r, depth=lamp_h, location=(0,0,0))
+        cyl = bpy.context.active_object
         
-
-
-
-
-
+        mod_bool = cube.modifiers.new('my_bool_mod', 'BOOLEAN')
+        mod_bool.operation = 'DIFFERENCE'
+        mod_bool.object = cyl
+        
+        cyl.hide_set(True)
+        
+        
+        #vertical "pillars"
+        vp_h = H - roof_t - base_h #height of pillar
+        vp_Zcenter = base_h + vp/2 #Z-coordinate of pillat centroid
+        vp_t = 0.05*H #thickness of pillar aka cross section width
+        vp_x =  base_l/2 - vp_t/2 #absolute value of pillar x coordinates
+        vp_y =  base_l/2 - vp_t/2 #absolute value of pillar y coordinates
+        
+        bpy.ops.mesh.primitive_cube_add(location=(vp_x,vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
+        cube2 = bpy.context.active_object
+        
+        bpy.ops.mesh.primitive_cube_add(location=(-1*vp_x,-1*vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
+        cube3 = bpy.context.active_object
+        
+        bpy.ops.mesh.primitive_cube_add(location=(-1*vp_x,vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
+        cube4 = bpy.context.active_object
+        
+        bpy.ops.mesh.primitive_cube_add(location=(vp_x,-1*vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
+        cube5 = bpy.context.active_object
+                
+        #roof
+        roof_Zcenter = H - base_h/2 - roof_t/2
+        bpy.ops.mesh.primitive_cube_add(location=(0,0,roof_Zcenter), scale = (base_l/2, base_w/2, base_h/2))
+        cube6 = bpy.context.active_object
+        
+        
 
 
 

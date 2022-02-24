@@ -9,6 +9,13 @@ class Blender:
     def __init__(self):
         self.debug = True #simple debug variable
             
+    def clear(self):
+        '''
+        This method will clear the workspace
+        '''
+        bpy.ops.object.select_all(action='SELECT')
+        bpy.ops.object.delete(use_global=False)
+    
     def cube(self, size, x, y, z, rx, ry, rz, sx, sy, sz):
         '''
         This will create a cube with desired inputs
