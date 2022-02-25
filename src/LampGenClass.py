@@ -261,14 +261,26 @@ class LampGen:
         #Start creating the file
         #first call the base class
         self.base()
+
+        #Define the coordinates
+        base_l = self.qdata['length']['data'] #length of base
+        base_l = self.blender.inchesToBlenderUnits(base_l)
+        base_w = self.qdata['width']['data'] #width of base
+        base_w = self.blender.inchesToBlenderUnits(base_w)
+        base_h = self.qdata['lampHeight']['data'] #depth of lamp
+        base_h = self.blender.inchesToBlenderUnits(base_h)
+
+        #Create the front face
+
+
+
+        
         
 
 
 
 
 
-        #Now we can export the stl file
-        self.blender.exportSTL(filename)
         
         
 
