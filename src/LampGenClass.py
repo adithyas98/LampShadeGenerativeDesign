@@ -202,15 +202,15 @@ class LampGen:
         '''
         
         #roof thickness
-        roof_t = 1
+        roof_t = 2
         
         #pulling in dimensions from UIclass
-        lamp_r = self.qdata['d']['data'] #radius of lamp
-        lamp_h = self.qdata['lampHeight']['data'] #depth of lamp
-        base_l = self.qdata['length']['data'] #length of base
-        base_w = self.qdata['width']['data'] #width of base
+        lamp_r = inchesToBlenderUnits(self.qdata['d']['data']) #radius of lamp
+        lamp_h = inchesToBlenderUnits(self.qdata['lampHeight']['data']) #depth of lamp
+        base_l = inchesToBlenderUnits(self.qdata['length']['data']) #length of base
+        base_w = inchesToBlenderUnits(self.qdata['width']['data']) #width of base
         base_h = lamp_h #height of base
-        H = self.qdata['height']['data'] #overall height
+        H = inchesToBlenderUnits(self.qdata['height']['data']) #overall height
 
         
         #building the base with cutout for lamp
