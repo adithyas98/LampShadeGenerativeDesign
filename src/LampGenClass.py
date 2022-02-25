@@ -30,9 +30,9 @@ class LampGen:
         qdata['lampHeight']['question'] = "What is the height of the Lamp?"
         qdata['lampHeight']['convert'] = float
 
-        #Ask for MAX Price
-        qdata['price']['question'] = "What is the maximum price you want to spend?"
-        qdata['price']['convert'] = float
+        #Ask for iterations (Complexity of design)
+        qdata['iter']['question'] = "How many iterations (complexity of design) do you want on the faces?"
+        qdata['iter']['convert'] = int
 
         #Ask for Dims of Lampshade
         #height
@@ -74,9 +74,9 @@ class LampGen:
         This method will randomly create a grid pattern on a face that is 
         passed in through the coordinates
         Inputs:
-            - coordinates: a list of tuples that express the four points that 
+            - coordinates: a list of lists that express the four points that 
                             bound the face
-                            ex. [(x1,y1,z1), ... , (x4,y4,z4)]
+                            ex. [[x1,y1,z1], ... , [x4,y4,z4]]
             - iterations: A standin for the complexity of the faces. Basically,
                             the number of random lines that are drawn on the 
                             face.
@@ -93,7 +93,8 @@ class LampGen:
             assert len(c) == variables
         #first we need to find the coordinate that is unchanging on the face
         constantIdx = 0 #Will hold the constant id
-        for i in len(coordinates[0]):
+        print(type(coordinates[0]))
+        for i in range(len(coordinates[0])):
             m = coordinates[0][i]
             if m == coordinates[1][i] and m == coordinates[2][i]:
                 #Then we have found out constant coordinate
@@ -112,13 +113,13 @@ class LampGen:
             minValues.append(min(dimVars))
         generatedDims = [[],[],[]] 
         #Now we can make lines along each axis
-        for dim in range(len(coordiantes[0])):
+        for dim in range(len(coordinates[0])):
             if dim == constantIdx:
                 #continue to the next iteration if we have the constant index
-                continue
+                continue 
             else:
                 #we can make our random grid lines
-                for i in range(iterations/2):
+                for i in range(iterations):
                     #find the two coordinates to create the cylinder
                     randPoint = minValues[dim]+(maxValues[dim]-minValues[dim])*random.random()
 
@@ -143,7 +144,7 @@ class LampGen:
                     point1[other] = maxValues[other]
 
                     #now make the cylinder
-                    self.lampCmds.append(self.blender.cylinderBetween(point0,point1,radius=1))
+                    self.lampCmds.append(self.blender.cylinderBetween(point0,point1,radius=0.001))
         return generatedDims
     def linesBetweenFaces(self,face0,face1,points0,points1,iterations):
         '''
@@ -213,16 +214,21 @@ class LampGen:
 
         
         #building the base with cutout for lamp
-        bpy.ops.mesh.primitive_cube_add(location=(0,0,0), scale = (base_l/2, base_w/2, base_h/2))
-        cube = bpy.context.active_object
-        bpy.ops.mesh.primitive_cylinder_add(radius=lamp_r, depth=lamp_h, location=(0,0,0))
-        cyl = bpy.context.active_object
+        cube = "cube = "
+        cube += self.cube(0,0,0, base_l/2, base_w/2, base_h/2)
+        self.lampCmds.append(cube)
+        currentObject = self.currentObject("cube")
+        self.lampCmds.append(currentObject)
+        cyl = "cyl = "
+        cyl += self.cylinder(lamp_r, lamp_h, 0, 0, 0)
+        currentObject = self.currentObject("cube")
+        self.lampCmds.append(currentObject)
         
-        mod_bool = cube.modifiers.new('my_bool_mod', 'BOOLEAN')
-        mod_bool.operation = 'DIFFERENCE'
-        mod_bool.object = cyl
+        self.lampCmds.append("mod_bool = cube.modifiers.new('my_bool_mod', 'BOOLEAN')")
+        self.lampCmds.append("mod_bool.operation = 'DIFFERENCE'")
+        self.lampCmds.append("mod_bool.object = cyl")
         
-        cyl.hide_set(True)
+        self.lampCmds("cyl.hide_set(True)")
         
         
         #vertical "pillars"
@@ -232,22 +238,39 @@ class LampGen:
         vp_x =  base_l/2 - vp_t/2 #absolute value of pillar x coordinates
         vp_y =  base_w/2 - vp_t/2 #absolute value of pillar y coordinates
         
-        bpy.ops.mesh.primitive_cube_add(location=(vp_x,vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
-        cube2 = bpy.context.active_object
+        pillar1 = "pillar1 = "
+        pillar1 += self.cube(vp_x,vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        self.lampCmds.append(pillar1)
+        currentObject = self.currentObject("pillar1")
+        self.lampCmds.append(currentObject)
         
-        bpy.ops.mesh.primitive_cube_add(location=(-1*vp_x,-1*vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
-        cube3 = bpy.context.active_object
         
-        bpy.ops.mesh.primitive_cube_add(location=(-1*vp_x,vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
-        cube4 = bpy.context.active_object
+        pillar2 = "pillar2 = "
+        pillar2 += self.cube(-1*vp_x,-1*vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        self.lampCmds.append(pillar2)
+        currentObject = self.currentObject("pillar2")
+        self.lampCmds.append(currentObject)        
         
-        bpy.ops.mesh.primitive_cube_add(location=(vp_x,-1*vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
-        cube5 = bpy.context.active_object
+        pillar3 = "pillar3 = "
+        pillar3 += self.cube(-1*vp_x,vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        self.lampCmds.append(pillar3)
+        currentObject = self.currentObject("pillar3")
+        self.lampCmds.append(currentObject)
+        
+        pillar4 = "pillar4 = "
+        pillar4 += self.cube(vp_x,-1*vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        self.lampCmds.append(pillar4)
+        currentObject = self.currentObject("pillar4")
+        self.lampCmds.append(currentObject)
                 
         #roof
         roof_Zcenter = H - base_h/2 - roof_t/2
-        bpy.ops.mesh.primitive_cube_add(location=(0,0,roof_Zcenter), scale = (base_l/2, base_w/2, base_h/2))
-        cube6 = bpy.context.active_object
+        roof = "roof = "
+        roof += self.cube(0,0,roof_Zcenter, base_l/2, base_w/2, base_h/2)
+        self.lampCmds.append(roof)
+        currentObject = self.currentObject("roof")
+        self.lampCmds.append(currentObject)        
+        
     def exportLampShade(self,filename):
         '''
         Method that will export the lamp shade as an stl file
@@ -258,7 +281,7 @@ class LampGen:
         '''
         #Start creating the file
         #first call the base class
-        self.base()
+        #self.base()
 
         #Define the coordinates
         base_l = self.qdata['length']['data'] #length of base
@@ -269,27 +292,32 @@ class LampGen:
         H = self.blender.inchesToBlenderUnits(H)/2
         base_h = self.qdata['lampHeight']['data'] #depth of lamp
         bh = self.blender.inchesToBlenderUnits(base_h)/2
+        iterations = self.qdata['iter']['data']
 
         #Create the six faces
-        front = [(-1*bl,bw,H-bh),(bl,bw,H-bh),(-1*bl,bw,bh),(bl,bw,bh)]
-        back = [(-1*bl,-1*bw,H-bh),(bl,-1*bw,H-bh),(-1*bl,-1*bw,bh),(bl,-1*bw,bh)]
-        left = [(-1*bl,bw,H-bh),(-1*bl,bw,bh),(-1*bl,-1*bw,H-bh),(-1*bl,-1*bw,bh)]
-        right = [(bl,bw,H-bh),(bl,bw,bh),(bl,-1*bw,H-bh),(bl,-1*bw,bh)]
-        top = [(-1*bl,bw,H-bh),(bl,bw,H-bh),(-1*bl,-1*bw,H-bh),(bl,-1*bw,H-bh)]
-        bot = [(-1*bl,bw,bh),(bl,bw,bh),(-1*bl,-1*bw,bh),(bl,-1*bw,bh)]
+        front = [[-1*bl,bw,H-bh],[bl,bw,H-bh],[-1*bl,bw,bh],[bl,bw,bh]]
+        back = [[-1*bl,-1*bw,H-bh],[bl,-1*bw,H-bh],[-1*bl,-1*bw,bh],[bl,-1*bw,bh]]
+        left = [[-1*bl,bw,H-bh],[-1*bl,bw,bh],[-1*bl,-1*bw,H-bh],[-1*bl,-1*bw,bh]]
+        right = [[bl,bw,H-bh],[bl,bw,bh],[bl,-1*bw,H-bh],[bl,-1*bw,bh]]
+        top = [[-1*bl,bw,H-bh],[bl,bw,H-bh],[-1*bl,-1*bw,H-bh],[bl,-1*bw,H-bh]]
+        bot = [[-1*bl,bw,bh],[bl,bw,bh],[-1*bl,-1*bw,bh],[bl,-1*bw,bh]]
 
-        self.face(front,20)
+        self.face(front,iterations)
 
 
 
 
         with open(filename,'w') as f:
             f.write(self.blender.header())
+            f.write('\n')
+            f.write(self.blender.clear())
+            f.write('\n')
             for cmd in self.lampCmds:
                 f.write(cmd)
                 f.write('\n')
-            f.write(self.blender.saveBlendFile("./output/shade.blend"))
-            f.write(self.blender.exportSTL("./output/shade.stl"))
+            f.write(self.blender.saveBlendFile("./shade.blend"))
+            f.write('\n')
+            f.write(self.blender.exportSTL("./shade.stl"))
 
 
 
