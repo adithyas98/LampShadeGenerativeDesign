@@ -2,9 +2,8 @@
 
 from BlenderClass import Blender
 from UIClass import UserInput
-from ShapewaysAPI import ShapeWayAPI
 from random import randint
-
+from collections import defaultdict
 import os
 import random
 
@@ -13,7 +12,6 @@ class LampGen:
     This class will use the blender class to build the lamp shade and generate
     and stl file.
     '''
-    
     def __init__(self,csvInput=False,csvFile=None):
         '''
         Inputs:
@@ -22,7 +20,7 @@ class LampGen:
         '''
         #Define the intro to the questions
         intro = "Please answer the following questions. All answers are in inches"
-        qdata = dict()
+        qdata = defaultdict(dict)
         #Get the Dimensions of the Lamp
         #Diameter of the lamp
         qdata['d']['question'] = "What is the diameter of the Lamp?"
@@ -197,7 +195,7 @@ class LampGen:
             self.lampCmds.append(self.blender.cylinderBetween(p0,p1,radius=1))
 
                 
-    def Base(self):
+    def base(self):
         '''
         This class will take dimensions from UIclass to build the base
         '''
@@ -264,13 +262,39 @@ class LampGen:
 
         #Define the coordinates
         base_l = self.qdata['length']['data'] #length of base
-        base_l = self.blender.inchesToBlenderUnits(base_l)
+        bl = self.blender.inchesToBlenderUnits(base_l)/2
         base_w = self.qdata['width']['data'] #width of base
-        base_w = self.blender.inchesToBlenderUnits(base_w)
+        bw = self.blender.inchesToBlenderUnits(base_w)/2
+        H = self.qdata['height']['data'] #overall height
+        H = self.blender.inchesToBlenderUnits(H)/2
         base_h = self.qdata['lampHeight']['data'] #depth of lamp
-        base_h = self.blender.inchesToBlenderUnits(base_h)
+        bh = self.blender.inchesToBlenderUnits(base_h)/2
 
-        #Create the front face
+        #Create the six faces
+        front = [(-1*bl,bw,H-bh),(bl,bw,H-bh),(-1*bl,bw,bh),(bl,bw,bh)]
+        back = [(-1*bl,-1*bw,H-bh),(bl,-1*bw,H-bh),(-1*bl,-1*bw,bh),(bl,-1*bw,bh)]
+        left = [(-1*bl,bw,H-bh),(-1*bl,bw,bh),(-1*bl,-1*bw,H-bh),(-1*bl,-1*bw,bh)]
+        right = [(bl,bw,H-bh),(bl,bw,bh),(bl,-1*bw,H-bh),(bl,-1*bw,bh)]
+        top = [(-1*bl,bw,H-bh),(bl,bw,H-bh),(-1*bl,-1*bw,H-bh),(bl,-1*bw,H-bh)]
+        bot = [(-1*bl,bw,bh),(bl,bw,bh),(-1*bl,-1*bw,bh),(bl,-1*bw,bh)]
+
+        self.face(front,20)
+
+
+
+
+        with open(filename,'w') as f:
+            f.write(self.blender.header())
+            for cmd in self.lampCmds:
+                f.write(cmd)
+                f.write('\n')
+            f.write(self.blender.saveBlendFile("./output/shade.blend"))
+            f.write(self.blender.exportSTL("./output/shade.stl"))
+
+
+
+
+
 
 
 

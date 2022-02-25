@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from LampGen import LampGen as Lamp
+from LampGenClass import LampGen as Lamp
 
 def main():
     '''
@@ -34,7 +34,7 @@ def main():
     #we want to just use the name of the file if the user inputted one
     if filename is None:
         filename = input("What you like to name the file? Just give us the name, we will handle the rest!")
-    lamp.exportLampShade("output/{}.stl".format(filename))
+    lamp.exportLampShade("output/{}.py".format(filename))
     
 
 

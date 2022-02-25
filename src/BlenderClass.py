@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import bpy #Python module for Blender
 
 class Blender:
     '''
@@ -16,6 +15,11 @@ class Blender:
         clear = "bpy.ops.object.select_all(action='SELECT')"
         clear += "bpy.ops.object.delete(use_global=False)"
         return clear
+    def header(self):
+        '''
+        Will add the import statement
+        '''
+        return "import bpy"
     
     def cube(self, size, x, y, z, rx, ry, rz, sx, sy, sz):
         '''
@@ -35,7 +39,7 @@ class Blender:
             - creates a cube with desired parameters
         '''
         cube = "bpy.ops.mesh.primitive_cube_add(size={}, align='WORLD', ".format(size)
-        cube += "location=({}, {}, {}), rotation=(rx, ry, rz),"format(x,y,z,rx,ry,rz)
+        cube += "location=({}, {}, {}), rotation=(rx, ry, rz),".format(x,y,z,rx,ry,rz)
         cube += "scale=(sx, sy, sz))".format(sx,sy,sz)
         
         return cube
