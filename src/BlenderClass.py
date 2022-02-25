@@ -13,8 +13,9 @@ class Blender:
         '''
         This method will clear the workspace
         '''
-        bpy.ops.object.select_all(action='SELECT')
-        bpy.ops.object.delete(use_global=False)
+        clear = "bpy.ops.object.select_all(action='SELECT')"
+        clear += "bpy.ops.object.delete(use_global=False)"
+        return clear
     
     def cube(self, size, x, y, z, rx, ry, rz, sx, sy, sz):
         '''
@@ -33,34 +34,12 @@ class Blender:
         Output:
             - creates a cube with desired parameters
         '''
-        bpy.ops.mesh.primitive_cube_add(size=size, align='WORLD', \
-                                        location=(x, y, z), rotation=(rx, ry, rz), scale=(sx, sy, sz))
+        cube = "bpy.ops.mesh.primitive_cube_add(size={}, align='WORLD', ".format(size)
+        cube += "location=({}, {}, {}), rotation=(rx, ry, rz),"format(x,y,z,rx,ry,rz)
+        cube += "scale=(sx, sy, sz))".format(sx,sy,sz)
+        
+        return cube
             
-    def cylinderBetween(self,point0,point1,radius):
-        '''
-        Will create a cylinder between two points with the specified radius
-        Inputs:
-           - point0: a tuple containing x,y,z coordinates for the first point
-           - point1: a tuple containing x,y,z coordinates for the second point
-           - radius: the radius of the cylinder
-        output:
-            - The cylinder object added to the cavnas
-        '''
-        dx = x2 - x1
-        dy = y2 - y1
-        dz = z2 - z1
-        dist = math.sqrt(dx**2 + dy**2 + dz**2)
-
-        bpy.ops.mesh.primitive_cylinder_add(radius = r,depth = dist,
-              location = (dx/2 + x1, dy/2 + y1, dz/2 + z1)
-        )
-
-        phi = math.atan2(dy, dx)
-        theta = math.acos(dz/dist)
-
-        bpy.context.object.rotation_euler[1] = theta
-        bpy.context.object.rotation_euler[2] = phi
-
     def cylinder(self, v, r, d, x, y, z, rx, ry, rz, sx, sy, sz):
         '''
         This will create a cylinder with desired inputs
@@ -80,8 +59,14 @@ class Blender:
         Output:
             - creates a cylinder with desired parameters
         '''
-        bpy.ops.mesh.primitive_cylinder_add(vertices=v, radius=r, depth=d, \
-                                            end_fill_type='NGON', align='WORLD', location=(x, y, z), rotation=(rx, ry, rz), scale=(sx, sy, sz))            
+        cylinder = "bpy.ops.mesh.primitive_cylinder_add"
+        cylinder += "(vertices={}, radius={}, depth={},".format(v,r,d)
+        cylinder += "end_fill_type='NGON', align='WORLD', "
+        cylinder += "location=({}, {}, {}), rotation=({}, {}, {}),".format(x,y,z,rx,ry,rz) 
+        cylinder += "scale=({}, {}, {}))".format(sz,sy,sz)
+        
+        return cylinder
+                                                        
     def exportSTL(self,filepath):
         '''
         Export the stl file of the object that was created
@@ -90,34 +75,6 @@ class Blender:
         Output:
             - Confirmation that the file was saved
         '''
-        bpy.ops.export_mesh.stl('INVOKE_DEFAULT',filepath=filepath)
-    def blenderUnitsToInches(self,bu):
-        '''
-        Converts Blender units (BU) to inches
-        Inputs:
-            - bu: blender units to convert
-        Output:
-            - conversion made to inches(float)
-        '''
-        #1in = 0.0254 bu
-        return bu/0.0254
-    def inchesToBlenderUnits(self,inches):
-        '''
-        Converts inches to Blender Units. Trusts that the scale has not been
-        changed!!!
-        Inputs:
-            - inches: inches measurement to convert
-        Outputs:
-            - Converted measurement in blender units (bu)
-        '''
-        #1in = 0.0254 bu
-        return inches * 0.0254
-    def saveBlendFile(self,filename):
-        '''
-        Saves the model as a blend file
-        Input:
-            - filename: full file path where you want to save the file
-        Ouput:
-            - the command to save the file
-        '''
-        return "bpy.ops.wm.save_mainfile(filename={})".format(filename)
+        export = "bpy.ops.export_mesh.stl(filepath={})".format(filepath)
+        
+        return export
