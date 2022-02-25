@@ -303,6 +303,11 @@ class LampGen:
         bot = [[-1*bl,bw,bh],[bl,bw,bh],[-1*bl,-1*bw,bh],[bl,-1*bw,bh]]
 
         self.face(front,iterations)
+        self.face(back,iterations)
+        self.face(left,iterations)
+        self.face(right,iterations)
+        self.face(top,iterations)
+        self.face(bot,iterations)
 
 
 
