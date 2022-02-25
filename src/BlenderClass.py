@@ -38,12 +38,13 @@ class Blender:
         Output:
             - creates a cube with desired parameters
         '''
+
         cube = "bpy.ops.mesh.primitive_cube_add(align='WORLD', "
         cube += "location=({}, {}, {}), ".format(x,y,z)
         cube += "scale=(sx, sy, sz))".format(sx,sy,sz)
         
         return cube
-<<<<<<< Updated upstream
+
     def cylinderBetween(self,point0,point1,radius):
         '''
         Will create a cylinder between two points with the specified radius
@@ -74,11 +75,9 @@ class Blender:
         cyl += 'bpy.context.object.rotation_euler[1] = {}\n'.format(theta)
         cyl += 'bpy.context.object.rotation_euler[2] = {}\n'.format(phi)            
         return cyl
-    def cylinder(self, v, r, d, x, y, z, rx, ry, rz, sx, sy, sz):
-=======
+
             
     def cylinder(self, r, d, x, y, z):
->>>>>>> Stashed changes
         '''
         This will create a cylinder with desired inputs
         Inputs:
