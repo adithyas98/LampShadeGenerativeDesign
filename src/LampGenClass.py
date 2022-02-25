@@ -232,7 +232,7 @@ class LampGen:
         vp_Zcenter = base_h + vp/2 #Z-coordinate of pillat centroid
         vp_t = 0.05*H #thickness of pillar aka cross section width
         vp_x =  base_l/2 - vp_t/2 #absolute value of pillar x coordinates
-        vp_y =  base_l/2 - vp_t/2 #absolute value of pillar y coordinates
+        vp_y =  base_w/2 - vp_t/2 #absolute value of pillar y coordinates
         
         bpy.ops.mesh.primitive_cube_add(location=(vp_x,vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
         cube2 = bpy.context.active_object
