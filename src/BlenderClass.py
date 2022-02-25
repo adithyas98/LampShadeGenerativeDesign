@@ -112,17 +112,12 @@ class Blender:
         '''
         #1in = 0.0254 bu
         return inches * 0.0254
-    def exportImage(self,filepath):
+    def saveBlendFile(self,filename):
         '''
-        #TODO: UNTESTED !!!! PLEASE TEST!
-        Will export an image of the object
+        Saves the model as a blend file
         Input:
-            - filepath: The filepath to save the image file
+            - filename: full file path where you want to save the file
+        Ouput:
+            - the command to save the file
         '''
-        bpy.context.scene.render.filepath = filepath
-        bpy.context.scene.render.resolution_x = 1920
-        bpy.context.scene.render.resolution_y = 1080
-        bpy.ops.object.camera_add(location=(0, 4, 4),rotation=(-0.7853, 0, 0))
-        context.scene.camera = context.object 
-        bpy.context.render.render(write_still=True)
-
+        return "bpy.ops.wm.save_mainfile(filename={})".format(filename)

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import sys
-from LampGenClass import LampGen as Lamp
+from LampGen import LampGen as Lamp
+
 def main():
     '''
     Main method that will run all of our code

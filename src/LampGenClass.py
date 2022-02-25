@@ -68,6 +68,9 @@ class LampGen:
         #create the blender object
         self.blender = Blender()
 
+        #Create a list to hold the commands
+        self.lampCmds = []
+
     def face(self,coordinates,iterations):
         '''
         This method will randomly create a grid pattern on a face that is 
@@ -142,7 +145,7 @@ class LampGen:
                     point1[other] = maxValues[other]
 
                     #now make the cylinder
-                    self.blender.cylinderBetween(point0,point1,radius=2)
+                    self.lampCmds.append(self.blender.cylinderBetween(point0,point1,radius=1))
         return generatedDims
     def linesBetweenFaces(self,face0,face1,points0,points1,iterations):
         '''
@@ -183,7 +186,7 @@ class LampGen:
                     #We want to generate a point here
                     p0[dim] = random.choice(points0[dim])
              #Do the same for point 1
-             for dim in range(len(points1)):
+            for dim in range(len(points1)):
                 if len(points1[dim]) == 0:
                     continue
                 else:
@@ -191,7 +194,7 @@ class LampGen:
                     p1[dim] = random.choice(points1[dim])
                                        
             #now we can create the cylinder
-            self.blender.cylinderBetween(p0,p1,radius=1)
+            self.lampCmds.append(self.blender.cylinderBetween(p0,p1,radius=1))
 
                 
     def Base(self):
@@ -254,6 +257,18 @@ class LampGen:
             - None
         Output:
             - stl file of lamp shade
+        '''
+        #Start creating the file
+        #first call the base class
+        self.base()
+        
+
+
+
+
+
+        #Now we can export the stl file
+        self.blender.exportSTL(filename)
         
         
 
