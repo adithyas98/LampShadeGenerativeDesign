@@ -41,7 +41,7 @@ class Blender:
 
         cube = "bpy.ops.mesh.primitive_cube_add(align='WORLD', "
         cube += "location=({}, {}, {}), ".format(x,y,z)
-        cube += "scale=(sx, sy, sz))".format(sx,sy,sz)
+        cube += "scale=({}, {}, {}))".format(sx,sy,sz)
         
         return cube
 
@@ -99,7 +99,7 @@ class Blender:
         cylinder = "bpy.ops.mesh.primitive_cylinder_add"
         cylinder += "(radius={}, depth={},".format(r,d)
         cylinder += "end_fill_type='NGON', align='WORLD', "
-        cylinder += "location=({}, {}, {})".format(x,y,z) 
+        cylinder += "location=({}, {}, {}))".format(x,y,z) 
         
         return cylinder
                                                         

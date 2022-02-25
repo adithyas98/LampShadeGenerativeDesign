@@ -205,70 +205,71 @@ class LampGen:
         roof_t = 2
         
         #pulling in dimensions from UIclass
-        lamp_r = inchesToBlenderUnits(self.qdata['d']['data']) #radius of lamp
-        lamp_h = inchesToBlenderUnits(self.qdata['lampHeight']['data']) #depth of lamp
-        base_l = inchesToBlenderUnits(self.qdata['length']['data']) #length of base
-        base_w = inchesToBlenderUnits(self.qdata['width']['data']) #width of base
+        lamp_r = self.blender.inchesToBlenderUnits(self.qdata['d']['data']) #radius of lamp
+        lamp_h = self.blender.inchesToBlenderUnits(self.qdata['lampHeight']['data']) #depth of lamp
+        base_l = self.blender.inchesToBlenderUnits(self.qdata['length']['data']) #length of base
+        base_w = self.blender.inchesToBlenderUnits(self.qdata['width']['data']) #width of base
         base_h = lamp_h #height of base
-        H = inchesToBlenderUnits(self.qdata['height']['data']) #overall height
+        H = self.blender.inchesToBlenderUnits(self.qdata['height']['data']) #overall height
 
         
         #building the base with cutout for lamp
         cube = "cube = "
-        cube += self.cube(0,0,0, base_l/2, base_w/2, base_h/2)
+        cube += self.blender.cube(0,0,0, base_l/2, base_w/2, base_h/2)
         self.lampCmds.append(cube)
-        currentObject = self.currentObject("cube")
+        currentObject = self.blender.currentObject("cube")
         self.lampCmds.append(currentObject)
         cyl = "cyl = "
-        cyl += self.cylinder(lamp_r, lamp_h, 0, 0, 0)
-        currentObject = self.currentObject("cube")
+        cyl += self.blender.cylinder(lamp_r, lamp_h, 0, 0, 0)
+        self.lampCmds.append(cyl)
+        currentObject = self.blender.currentObject("cyl")
         self.lampCmds.append(currentObject)
         
         self.lampCmds.append("mod_bool = cube.modifiers.new('my_bool_mod', 'BOOLEAN')")
         self.lampCmds.append("mod_bool.operation = 'DIFFERENCE'")
         self.lampCmds.append("mod_bool.object = cyl")
         
-        self.lampCmds("cyl.hide_set(True)")
+        self.lampCmds.append("cyl.hide_set(True)")
         
         
         #vertical "pillars"
         vp_h = H - roof_t - base_h #height of pillar
-        vp_Zcenter = base_h + vp/2 #Z-coordinate of pillat centroid
+        vp_Zcenter = base_h + vp_h/2 #Z-coordinate of pillat centroid
         vp_t = 0.05*H #thickness of pillar aka cross section width
         vp_x =  base_l/2 - vp_t/2 #absolute value of pillar x coordinates
         vp_y =  base_w/2 - vp_t/2 #absolute value of pillar y coordinates
         
         pillar1 = "pillar1 = "
-        pillar1 += self.cube(vp_x,vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        pillar1 += self.blender.cube(vp_x,vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
         self.lampCmds.append(pillar1)
-        currentObject = self.currentObject("pillar1")
+        currentObject = self.blender.currentObject("pillar1")
         self.lampCmds.append(currentObject)
         
         
         pillar2 = "pillar2 = "
-        pillar2 += self.cube(-1*vp_x,-1*vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        pillar2 += self.blender.cube(-1*vp_x,-1*vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
         self.lampCmds.append(pillar2)
-        currentObject = self.currentObject("pillar2")
+        currentObject = self.blender.currentObject("pillar2")
         self.lampCmds.append(currentObject)        
         
         pillar3 = "pillar3 = "
-        pillar3 += self.cube(-1*vp_x,vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        pillar3 += self.blender.cube(-1*vp_x,vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
         self.lampCmds.append(pillar3)
-        currentObject = self.currentObject("pillar3")
+        currentObject = self.blender.currentObject("pillar3")
         self.lampCmds.append(currentObject)
         
         pillar4 = "pillar4 = "
-        pillar4 += self.cube(vp_x,-1*vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        pillar4 += self.blender.cube(vp_x,-1*vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
         self.lampCmds.append(pillar4)
-        currentObject = self.currentObject("pillar4")
+        currentObject = self.blender.currentObject("pillar4")
         self.lampCmds.append(currentObject)
                 
         #roof
         roof_Zcenter = H - base_h/2 - roof_t/2
         roof = "roof = "
-        roof += self.cube(0,0,roof_Zcenter, base_l/2, base_w/2, base_h/2)
+        roof += self.blender.cube(0,0,roof_Zcenter, base_l/2, base_w/2, base_h/2)
         self.lampCmds.append(roof)
-        currentObject = self.currentObject("roof")
+        currentObject = self.blender.currentObject("roof")
         self.lampCmds.append(currentObject)        
         
     def exportLampShade(self,filename):
@@ -281,7 +282,7 @@ class LampGen:
         '''
         #Start creating the file
         #first call the base class
-        #self.base()
+        self.base()
 
         #Define the coordinates
         base_l = self.qdata['length']['data'] #length of base
