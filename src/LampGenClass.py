@@ -30,9 +30,9 @@ class LampGen:
         qdata['lampHeight']['question'] = "What is the height of the Lamp?"
         qdata['lampHeight']['convert'] = float
 
-        #Ask for MAX Price
-        qdata['price']['question'] = "What is the maximum price you want to spend?"
-        qdata['price']['convert'] = float
+        #Ask for iterations (Complexity of design)
+        qdata['iter']['question'] = "How many iterations (complexity of design) do you want on the faces?"
+        qdata['iter']['convert'] = int
 
         #Ask for Dims of Lampshade
         #height
@@ -74,9 +74,9 @@ class LampGen:
         This method will randomly create a grid pattern on a face that is 
         passed in through the coordinates
         Inputs:
-            - coordinates: a list of tuples that express the four points that 
+            - coordinates: a list of lists that express the four points that 
                             bound the face
-                            ex. [(x1,y1,z1), ... , (x4,y4,z4)]
+                            ex. [[x1,y1,z1], ... , [x4,y4,z4]]
             - iterations: A standin for the complexity of the faces. Basically,
                             the number of random lines that are drawn on the 
                             face.
@@ -93,7 +93,8 @@ class LampGen:
             assert len(c) == variables
         #first we need to find the coordinate that is unchanging on the face
         constantIdx = 0 #Will hold the constant id
-        for i in len(coordinates[0]):
+        print(type(coordinates[0]))
+        for i in range(len(coordinates[0])):
             m = coordinates[0][i]
             if m == coordinates[1][i] and m == coordinates[2][i]:
                 #Then we have found out constant coordinate
@@ -112,13 +113,13 @@ class LampGen:
             minValues.append(min(dimVars))
         generatedDims = [[],[],[]] 
         #Now we can make lines along each axis
-        for dim in range(len(coordiantes[0])):
+        for dim in range(len(coordinates[0])):
             if dim == constantIdx:
                 #continue to the next iteration if we have the constant index
-                continue
+                continue 
             else:
                 #we can make our random grid lines
-                for i in range(iterations/2):
+                for i in range(iterations):
                     #find the two coordinates to create the cylinder
                     randPoint = minValues[dim]+(maxValues[dim]-minValues[dim])*random.random()
 
@@ -143,7 +144,7 @@ class LampGen:
                     point1[other] = maxValues[other]
 
                     #now make the cylinder
-                    self.lampCmds.append(self.blender.cylinderBetween(point0,point1,radius=1))
+                    self.lampCmds.append(self.blender.cylinderBetween(point0,point1,radius=0.001))
         return generatedDims
     def linesBetweenFaces(self,face0,face1,points0,points1,iterations):
         '''
@@ -258,7 +259,7 @@ class LampGen:
         '''
         #Start creating the file
         #first call the base class
-        self.base()
+        #self.base()
 
         #Define the coordinates
         base_l = self.qdata['length']['data'] #length of base
@@ -269,27 +270,32 @@ class LampGen:
         H = self.blender.inchesToBlenderUnits(H)/2
         base_h = self.qdata['lampHeight']['data'] #depth of lamp
         bh = self.blender.inchesToBlenderUnits(base_h)/2
+        iterations = self.qdata['iter']['data']
 
         #Create the six faces
-        front = [(-1*bl,bw,H-bh),(bl,bw,H-bh),(-1*bl,bw,bh),(bl,bw,bh)]
-        back = [(-1*bl,-1*bw,H-bh),(bl,-1*bw,H-bh),(-1*bl,-1*bw,bh),(bl,-1*bw,bh)]
-        left = [(-1*bl,bw,H-bh),(-1*bl,bw,bh),(-1*bl,-1*bw,H-bh),(-1*bl,-1*bw,bh)]
-        right = [(bl,bw,H-bh),(bl,bw,bh),(bl,-1*bw,H-bh),(bl,-1*bw,bh)]
-        top = [(-1*bl,bw,H-bh),(bl,bw,H-bh),(-1*bl,-1*bw,H-bh),(bl,-1*bw,H-bh)]
-        bot = [(-1*bl,bw,bh),(bl,bw,bh),(-1*bl,-1*bw,bh),(bl,-1*bw,bh)]
+        front = [[-1*bl,bw,H-bh],[bl,bw,H-bh],[-1*bl,bw,bh],[bl,bw,bh]]
+        back = [[-1*bl,-1*bw,H-bh],[bl,-1*bw,H-bh],[-1*bl,-1*bw,bh],[bl,-1*bw,bh]]
+        left = [[-1*bl,bw,H-bh],[-1*bl,bw,bh],[-1*bl,-1*bw,H-bh],[-1*bl,-1*bw,bh]]
+        right = [[bl,bw,H-bh],[bl,bw,bh],[bl,-1*bw,H-bh],[bl,-1*bw,bh]]
+        top = [[-1*bl,bw,H-bh],[bl,bw,H-bh],[-1*bl,-1*bw,H-bh],[bl,-1*bw,H-bh]]
+        bot = [[-1*bl,bw,bh],[bl,bw,bh],[-1*bl,-1*bw,bh],[bl,-1*bw,bh]]
 
-        self.face(front,20)
+        self.face(front,iterations)
 
 
 
 
         with open(filename,'w') as f:
             f.write(self.blender.header())
+            f.write('\n')
+            f.write(self.blender.clear())
+            f.write('\n')
             for cmd in self.lampCmds:
                 f.write(cmd)
                 f.write('\n')
-            f.write(self.blender.saveBlendFile("./output/shade.blend"))
-            f.write(self.blender.exportSTL("./output/shade.stl"))
+            f.write(self.blender.saveBlendFile("./shade.blend"))
+            f.write('\n')
+            f.write(self.blender.exportSTL("./shade.stl"))
 
 
 

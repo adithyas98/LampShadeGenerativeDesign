@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import math
 class Blender:
     '''
     This class will implement all the necessary Blender methods
@@ -12,14 +12,14 @@ class Blender:
         '''
         This method will clear the workspace
         '''
-        clear = "bpy.ops.object.select_all(action='SELECT')"
-        clear += "bpy.ops.object.delete(use_global=False)"
+        clear = "bpy.ops.object.select_all(action='SELECT')\n"
+        clear += "bpy.ops.object.delete(use_global=False)\n"
         return clear
     def header(self):
         '''
         Will add the import statement
         '''
-        return "import bpy"
+        return "import bpy\n"
     
     def cube(self, size, x, y, z, rx, ry, rz, sx, sy, sz):
         '''
@@ -43,7 +43,36 @@ class Blender:
         cube += "scale=(sx, sy, sz))".format(sx,sy,sz)
         
         return cube
-            
+    def cylinderBetween(self,point0,point1,radius):
+        '''
+        Will create a cylinder between two points with the specified radius
+        Inputs:
+           - point0: a tuple containing x,y,z coordinates for the first point
+           - point1: a tuple containing x,y,z coordinates for the second point
+           - radius: the radius of the cylinder
+        output:
+            - The cylinder object added to the cavnas
+        '''
+        x1 = point0[0]
+        x2 = point1[0]
+        y1 = point0[1]
+        y2 = point1[1]
+        z1 = point0[2]
+        z2 = point1[2]
+        dx = x2 - x1
+        dy = y2 - y1
+        dz = z2 - z1
+        dist = math.sqrt(dx**2 + dy**2 + dz**2)
+
+        cyl = 'bpy.ops.mesh.primitive_cylinder_add(radius = {},depth = {},'.format(radius,dist)
+        cyl += 'location = ({}/2 + {}, {}/2 + {}, {}/2 + {}))\n'.format(dx,x1,dy,y1,dz,z1)
+
+        phi = math.atan2(dy, dx)
+        theta = math.acos(dz/dist)
+
+        cyl += 'bpy.context.object.rotation_euler[1] = {}\n'.format(theta)
+        cyl += 'bpy.context.object.rotation_euler[2] = {}\n'.format(phi)            
+        return cyl
     def cylinder(self, v, r, d, x, y, z, rx, ry, rz, sx, sy, sz):
         '''
         This will create a cylinder with desired inputs
@@ -78,7 +107,7 @@ class Blender:
             - filepath: The full filepath to where you want to save the stl file Output:
             - Confirmation that the file was saved
         '''
-        export = "bpy.ops.export_mesh.stl(filepath={})".format(filepath)
+        export = "bpy.ops.export_mesh.stl(filepath='{}')".format(filepath)
         
         return export
     def blenderUnitsToInches(self,bu):
@@ -110,4 +139,4 @@ class Blender:
         Ouput:
             - the command to save the file
         '''
-        return "bpy.ops.wm.save_mainfile(filename={})".format(filename)
+        return "bpy.ops.wm.save_mainfile(filepath='{}')".format(filename)

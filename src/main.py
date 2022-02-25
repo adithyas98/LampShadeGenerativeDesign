@@ -9,6 +9,8 @@ def main():
     '''
     #Parse arguments
     filename = None
+    lamp = Lamp()
+    '''
     if len(sys.argv) == 1:
         print("Box class will be run normally")
         lamp = Lamp()
@@ -30,6 +32,7 @@ def main():
         print("Unrecognized input")
         print("Try -h for help")
         quit()
+    '''
     #Generate the box now
     #we want to just use the name of the file if the user inputted one
     if filename is None:
