@@ -214,16 +214,21 @@ class LampGen:
 
         
         #building the base with cutout for lamp
-        bpy.ops.mesh.primitive_cube_add(location=(0,0,0), scale = (base_l/2, base_w/2, base_h/2))
-        cube = bpy.context.active_object
-        bpy.ops.mesh.primitive_cylinder_add(radius=lamp_r, depth=lamp_h, location=(0,0,0))
-        cyl = bpy.context.active_object
+        cube = "cube = "
+        cube += self.cube(0,0,0, base_l/2, base_w/2, base_h/2)
+        self.lampCmds.append(cube)
+        currentObject = self.currentObject("cube")
+        self.lampCmds.append(currentObject)
+        cyl = "cyl = "
+        cyl += self.cylinder(lamp_r, lamp_h, 0, 0, 0)
+        currentObject = self.currentObject("cube")
+        self.lampCmds.append(currentObject)
         
-        mod_bool = cube.modifiers.new('my_bool_mod', 'BOOLEAN')
-        mod_bool.operation = 'DIFFERENCE'
-        mod_bool.object = cyl
+        self.lampCmds.append("mod_bool = cube.modifiers.new('my_bool_mod', 'BOOLEAN')")
+        self.lampCmds.append("mod_bool.operation = 'DIFFERENCE'")
+        self.lampCmds.append("mod_bool.object = cyl")
         
-        cyl.hide_set(True)
+        self.lampCmds("cyl.hide_set(True)")
         
         
         #vertical "pillars"
@@ -233,22 +238,39 @@ class LampGen:
         vp_x =  base_l/2 - vp_t/2 #absolute value of pillar x coordinates
         vp_y =  base_w/2 - vp_t/2 #absolute value of pillar y coordinates
         
-        bpy.ops.mesh.primitive_cube_add(location=(vp_x,vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
-        cube2 = bpy.context.active_object
+        pillar1 = "pillar1 = "
+        pillar1 += self.cube(vp_x,vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        self.lampCmds.append(pillar1)
+        currentObject = self.currentObject("pillar1")
+        self.lampCmds.append(currentObject)
         
-        bpy.ops.mesh.primitive_cube_add(location=(-1*vp_x,-1*vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
-        cube3 = bpy.context.active_object
         
-        bpy.ops.mesh.primitive_cube_add(location=(-1*vp_x,vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
-        cube4 = bpy.context.active_object
+        pillar2 = "pillar2 = "
+        pillar2 += self.cube(-1*vp_x,-1*vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        self.lampCmds.append(pillar2)
+        currentObject = self.currentObject("pillar2")
+        self.lampCmds.append(currentObject)        
         
-        bpy.ops.mesh.primitive_cube_add(location=(vp_x,-1*vp_y,vp_Zcenter), scale = (vp_t/2, vp_t/2, vp_h/2))
-        cube5 = bpy.context.active_object
+        pillar3 = "pillar3 = "
+        pillar3 += self.cube(-1*vp_x,vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        self.lampCmds.append(pillar3)
+        currentObject = self.currentObject("pillar3")
+        self.lampCmds.append(currentObject)
+        
+        pillar4 = "pillar4 = "
+        pillar4 += self.cube(vp_x,-1*vp_y,vp_Zcenter, vp_t/2, vp_t/2, vp_h/2)
+        self.lampCmds.append(pillar4)
+        currentObject = self.currentObject("pillar4")
+        self.lampCmds.append(currentObject)
                 
         #roof
         roof_Zcenter = H - base_h/2 - roof_t/2
-        bpy.ops.mesh.primitive_cube_add(location=(0,0,roof_Zcenter), scale = (base_l/2, base_w/2, base_h/2))
-        cube6 = bpy.context.active_object
+        roof = "roof = "
+        roof += self.cube(0,0,roof_Zcenter, base_l/2, base_w/2, base_h/2)
+        self.lampCmds.append(roof)
+        currentObject = self.currentObject("roof")
+        self.lampCmds.append(currentObject)        
+        
     def exportLampShade(self,filename):
         '''
         Method that will export the lamp shade as an stl file

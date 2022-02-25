@@ -21,7 +21,7 @@ class Blender:
         '''
         return "import bpy\n"
     
-    def cube(self, size, x, y, z, rx, ry, rz, sx, sy, sz):
+    def cube(self, x, y, z, sx, sy, sz):
         '''
         This will create a cube with desired inputs
         Inputs:
@@ -38,11 +38,13 @@ class Blender:
         Output:
             - creates a cube with desired parameters
         '''
-        cube = "bpy.ops.mesh.primitive_cube_add(size={}, align='WORLD', ".format(size)
-        cube += "location=({}, {}, {}), rotation=(rx, ry, rz),".format(x,y,z,rx,ry,rz)
+
+        cube = "bpy.ops.mesh.primitive_cube_add(align='WORLD', "
+        cube += "location=({}, {}, {}), ".format(x,y,z)
         cube += "scale=(sx, sy, sz))".format(sx,sy,sz)
         
         return cube
+
     def cylinderBetween(self,point0,point1,radius):
         '''
         Will create a cylinder between two points with the specified radius
@@ -73,7 +75,9 @@ class Blender:
         cyl += 'bpy.context.object.rotation_euler[1] = {}\n'.format(theta)
         cyl += 'bpy.context.object.rotation_euler[2] = {}\n'.format(phi)            
         return cyl
-    def cylinder(self, v, r, d, x, y, z, rx, ry, rz, sx, sy, sz):
+
+            
+    def cylinder(self, r, d, x, y, z):
         '''
         This will create a cylinder with desired inputs
         Inputs:
@@ -93,10 +97,9 @@ class Blender:
             - creates a cylinder with desired parameters
         '''
         cylinder = "bpy.ops.mesh.primitive_cylinder_add"
-        cylinder += "(vertices={}, radius={}, depth={},".format(v,r,d)
+        cylinder += "(radius={}, depth={},".format(r,d)
         cylinder += "end_fill_type='NGON', align='WORLD', "
-        cylinder += "location=({}, {}, {}), rotation=({}, {}, {}),".format(x,y,z,rx,ry,rz) 
-        cylinder += "scale=({}, {}, {}))".format(sz,sy,sz)
+        cylinder += "location=({}, {}, {})".format(x,y,z) 
         
         return cylinder
                                                         
@@ -110,6 +113,16 @@ class Blender:
         export = "bpy.ops.export_mesh.stl(filepath='{}')".format(filepath)
         
         return export
+    
+    def currentObject(self, mesh):
+        '''
+        Assigns blender mesh on screen to current object 
+
+        '''
+        currentObject = "{} = bpy.context.active_object".format(mesh)
+        
+        return currentObject
+    
     def blenderUnitsToInches(self,bu):
         '''
         Converts Blender units (BU) to inches
