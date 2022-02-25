@@ -71,10 +71,39 @@ class Blender:
         '''
         Export the stl file of the object that was created
         Input:
-            - filepath: The full filepath to where you want to save the stl file
-        Output:
+            - filepath: The full filepath to where you want to save the stl file Output:
             - Confirmation that the file was saved
         '''
         export = "bpy.ops.export_mesh.stl(filepath={})".format(filepath)
         
         return export
+    def blenderUnitsToInches(self,bu):
+        '''
+        Converts Blender units (BU) to inches
+        Inputs:
+            - bu: blender units to convert
+        Output:
+            - conversion made to inches(float)
+        '''
+        #1in = 0.0254 bu
+        return bu/0.0254
+    def inchesToBlenderUnits(self,inches):
+        '''
+        Converts inches to Blender Units. Trusts that the scale has not been
+        changed!!!
+        Inputs:
+            - inches: inches measurement to convert
+        Outputs:
+            - Converted measurement in blender units (bu)
+        '''
+        #1in = 0.0254 bu
+        return inches * 0.0254
+    def saveBlendFile(self,filename):
+        '''
+        Saves the model as a blend file
+        Input:
+            - filename: full file path where you want to save the file
+        Ouput:
+            - the command to save the file
+        '''
+        return "bpy.ops.wm.save_mainfile(filename={})".format(filename)
