@@ -133,6 +133,7 @@ class Blender:
         '''
         #1in = 0.0254 bu
         return bu/0.0254
+    
     def inchesToBlenderUnits(self,inches):
         '''
         Converts inches to Blender Units. Trusts that the scale has not been
@@ -144,6 +145,7 @@ class Blender:
         '''
         #1in = 0.0254 bu
         return inches * 0.0254
+    
     def saveBlendFile(self,filename):
         '''
         Saves the model as a blend file
