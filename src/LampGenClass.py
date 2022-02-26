@@ -201,16 +201,17 @@ class LampGen:
         This class will take dimensions from UIclass to build the base
         '''
         
-        #roof thickness
-        roof_t = 2
         
         #pulling in dimensions from UIclass
-        lamp_r = self.blender.inchesToBlenderUnits(self.qdata['d']['data']) #radius of lamp
+        lamp_r = self.blender.inchesToBlenderUnits(self.qdata['d']['data'])/2 #radius of lamp
         lamp_h = self.blender.inchesToBlenderUnits(self.qdata['lampHeight']['data']) #depth of lamp
         base_l = self.blender.inchesToBlenderUnits(self.qdata['length']['data']) #length of base
         base_w = self.blender.inchesToBlenderUnits(self.qdata['width']['data']) #width of base
         base_h = lamp_h #height of base
         H = self.blender.inchesToBlenderUnits(self.qdata['height']['data']) #overall height
+        
+        #roof thickness
+        roof_t = 0.01*H
 
         
         #building the base with cutout for lamp
@@ -234,7 +235,7 @@ class LampGen:
         
         #vertical "pillars"
         vp_h = H - roof_t - base_h #height of pillar
-        vp_Zcenter = base_h + vp_h/2 #Z-coordinate of pillat centroid
+        vp_Zcenter = base_h/2 + vp_h/2 #Z-coordinate of pillat centroid
         vp_t = 0.05*H #thickness of pillar aka cross section width
         vp_x =  base_l/2 - vp_t/2 #absolute value of pillar x coordinates
         vp_y =  base_w/2 - vp_t/2 #absolute value of pillar y coordinates
@@ -267,7 +268,7 @@ class LampGen:
         #roof
         roof_Zcenter = H - base_h/2 - roof_t/2
         roof = "roof = "
-        roof += self.blender.cube(0,0,roof_Zcenter, base_l/2, base_w/2, base_h/2)
+        roof += self.blender.cube(0,0,roof_Zcenter, base_l/2, base_w/2, roof_t)
         self.lampCmds.append(roof)
         currentObject = self.blender.currentObject("roof")
         self.lampCmds.append(currentObject)        
@@ -290,7 +291,7 @@ class LampGen:
         base_w = self.qdata['width']['data'] #width of base
         bw = self.blender.inchesToBlenderUnits(base_w)/2
         H = self.qdata['height']['data'] #overall height
-        H = self.blender.inchesToBlenderUnits(H)/2
+        H = self.blender.inchesToBlenderUnits(H)
         base_h = self.qdata['lampHeight']['data'] #depth of lamp
         bh = self.blender.inchesToBlenderUnits(base_h)/2
         iterations = self.qdata['iter']['data']
@@ -300,15 +301,15 @@ class LampGen:
         back = [[-1*bl,-1*bw,H-bh],[bl,-1*bw,H-bh],[-1*bl,-1*bw,bh],[bl,-1*bw,bh]]
         left = [[-1*bl,bw,H-bh],[-1*bl,bw,bh],[-1*bl,-1*bw,H-bh],[-1*bl,-1*bw,bh]]
         right = [[bl,bw,H-bh],[bl,bw,bh],[bl,-1*bw,H-bh],[bl,-1*bw,bh]]
-        top = [[-1*bl,bw,H-bh],[bl,bw,H-bh],[-1*bl,-1*bw,H-bh],[bl,-1*bw,H-bh]]
-        bot = [[-1*bl,bw,bh],[bl,bw,bh],[-1*bl,-1*bw,bh],[bl,-1*bw,bh]]
+        #top = [[-1*bl,bw,H-bh],[bl,bw,H-bh],[-1*bl,-1*bw,H-bh],[bl,-1*bw,H-bh]]
+        #bot = [[-1*bl,bw,bh],[bl,bw,bh],[-1*bl,-1*bw,bh],[bl,-1*bw,bh]]
 
         self.face(front,iterations)
         self.face(back,iterations)
         self.face(left,iterations)
         self.face(right,iterations)
-        self.face(top,iterations)
-        self.face(bot,iterations)
+        #self.face(top,iterations)
+        #self.face(bot,iterations)
 
 
 
